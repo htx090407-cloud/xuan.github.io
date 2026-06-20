@@ -1,10 +1,521 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>我的网站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作品集 | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #111111;
+      --gray-dark: #444444;
+      --gray-mid: #888888;
+      --gray-light: #e8e8e8;
+      --gray-bg: #f7f7f7;
+      --white: #ffffff;
+      --accent: #111111;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--gray-dark);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--black); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 3rem 5rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .hero-content { max-width: 720px; }
+    .hero-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gray-mid);
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--gray-dark);
+      max-width: 480px;
+      line-height: 1.8;
+    }
+
+    /* ABOUT */
+    .about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .about-left {
+      padding: 5rem 3rem;
+      border-right: 1px solid var(--gray-light);
+    }
+    .about-right {
+      padding: 5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      margin-bottom: 2rem;
+    }
+    .about-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+    .about-text {
+      color: var(--gray-dark);
+      font-size: 0.95rem;
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 400;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--gray-mid);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* WORKS */
+    .works { padding: 5rem 3rem; }
+    .works-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .works-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 400;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .filter-tab {
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--gray-light);
+      background: none;
+      cursor: pointer;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      transition: all 0.2s;
+    }
+    .filter-tab.active, .filter-tab:hover {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--black);
+    }
+
+    /* GRID */
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+    .work-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--gray-bg);
+    }
+    .work-card:nth-child(1) { grid-column: span 7; }
+    .work-card:nth-child(2) { grid-column: span 5; }
+    .work-card:nth-child(3) { grid-column: span 4; }
+    .work-card:nth-child(4) { grid-column: span 4; }
+    .work-card:nth-child(5) { grid-column: span 4; }
+    .work-card:nth-child(6) { grid-column: span 6; }
+    .work-card:nth-child(7) { grid-column: span 6; }
+
+    .work-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--gray-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: transform 0.5s ease;
+    }
+    .work-card:hover .work-img { transform: scale(1.03); }
+
+    /* Placeholder image patterns */
+    .img-pattern-1 { background: linear-gradient(135deg, #e8e4df 0%, #c9c3bc 100%); }
+    .img-pattern-2 { background: linear-gradient(135deg, #dde4e8 0%, #b8c8d0 100%); }
+    .img-pattern-3 { background: linear-gradient(135deg, #e8e0e8 0%, #c4b8c4 100%); }
+    .img-pattern-4 { background: linear-gradient(135deg, #e8e8de 0%, #c4c4b0 100%); }
+    .img-pattern-5 { background: linear-gradient(135deg, #e4dde8 0%, #c0b4c8 100%); }
+    .img-pattern-6 { background: linear-gradient(135deg, #e8dde0 0%, #c8b4b8 100%); }
+    .img-pattern-7 { background: linear-gradient(135deg, #dde8e4 0%, #b4c8c0 100%); }
+
+    .img-placeholder-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: rgba(0,0,0,0.12);
+      font-style: italic;
+    }
+
+    .work-info {
+      padding: 1rem 0 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .work-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    .work-meta {
+      font-size: 0.75rem;
+      color: var(--gray-mid);
+      margin-top: 0.2rem;
+    }
+    .work-year {
+      font-size: 0.75rem;
+      color: var(--gray-mid);
+    }
+
+    /* CONTACT */
+    .contact {
+      border-top: 1px solid var(--gray-light);
+      padding: 6rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .contact-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      line-height: 1.1;
+    }
+    .contact-title em {
+      font-style: italic;
+      color: var(--gray-mid);
+    }
+    .contact-right { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-email {
+      font-size: 1.3rem;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      color: var(--black);
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 0.25rem;
+      display: inline-block;
+      transition: color 0.2s;
+    }
+    .contact-email:hover { color: var(--gray-mid); border-color: var(--gray-mid); }
+    .contact-socials {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .contact-socials a {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-socials a:hover { color: var(--black); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--gray-light);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer p { font-size: 0.75rem; color: var(--gray-mid); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      .hero { padding: 0 1.5rem 4rem; }
+      .about { grid-template-columns: 1fr; }
+      .about-left { border-right: none; border-bottom: 1px solid var(--gray-light); padding: 3rem 1.5rem; }
+      .about-right { padding: 3rem 1.5rem; }
+      .works { padding: 3rem 1.5rem; }
+      .work-card:nth-child(n) { grid-column: span 12; }
+      .contact { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello! 我的网站上线了 🎉</h1>
+
+<nav>
+  <div class="nav-logo">你的名字</div>
+  <ul class="nav-links">
+    <li><a href="#works">作品</a></li>
+    <li><a href="#about">关于</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-label">设计师 &amp; 艺术创作者</p>
+    <h1 class="hero-title">
+      创造有<br>
+      <em>温度</em>的<br>
+      视觉语言
+    </h1>
+    <p class="hero-desc">我相信好的设计不只是美观——它是一种沟通，一种感受，一种与人产生连接的方式。</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-left">
+    <p class="section-label">关于我</p>
+    <h2 class="about-title">用视觉<br>讲述故事</h2>
+    <p class="about-text">我是一名专注于品牌视觉与艺术创作的设计师，擅长将抽象的概念转化为有力量的视觉表达。</p>
+    <p class="about-text">我的作品游走于平面设计、插画与装置艺术之间，探索材料、色彩与空间的无限可能。</p>
+  </div>
+  <div class="about-right">
+    <div class="stats">
+      <div>
+        <div class="stat-num">48+</div>
+        <div class="stat-label">完成项目</div>
+      </div>
+      <div>
+        <div class="stat-num">6</div>
+        <div class="stat-label">年经验</div>
+      </div>
+      <div>
+        <div class="stat-num">12</div>
+        <div class="stat-label">获奖记录</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">国际展览</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="works" id="works">
+  <div class="works-header">
+    <h2 class="works-title">精选作品</h2>
+    <div class="filter-tabs">
+      <button class="filter-tab active">全部</button>
+      <button class="filter-tab">品牌</button>
+      <button class="filter-tab">插画</button>
+      <button class="filter-tab">装置</button>
+    </div>
+  </div>
+
+  <div class="works-grid">
+    <div class="work-card">
+      <div class="work-img img-pattern-1">
+        <span class="img-placeholder-text">01</span>
+      </div>
+      <div class="work-info">
+        <div>
+          <div class="work-name">品牌视觉系统</div>
+          <div class="work-meta">品牌设计</div>
+        </div>
+        <div class="work-year">2024</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-img img-pattern-2">
+        <span class="img-placeholder-text">02</span>
+      </div>
+      <div class="work-info">
+        <div>
+          <div class="work-name">城市肌理</div>
+          <div class="work-meta">插画系列</div>
+        </div>
+        <div class="work-year">2024</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-img img-pattern-3">
+        <span class="img-placeholder-text">03</span>
+      </div>
+      <div class="work-info">
+        <div>
+          <div class="work-name">光与影</div>
+          <div class="work-meta">装置艺术</div>
+        </div>
+        <div class="work-year">2023</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-img img-pattern-4">
+        <span class="img-placeholder-text">04</span>
+      </div>
+      <div class="work-info">
+        <div>
+          <div class="work-name">自然形态</div>
+          <div class="work-meta">插画</div>
+        </div>
+        <div class="work-year">2023</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-img img-pattern-5">
+        <span class="img-placeholder-text">05</span>
+      </div>
+      <div class="work-info">
+        <div>
+          <div class="work-name">字体实验</div>
+          <div class="work-meta">平面设计</div>
+        </div>
+        <div class="work-year">2023</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-img img-pattern-6">
+        <span class="img-placeholder-text">06</span>
+      </div>
+      <div class="work-info">
+        <div>
+          <div class="work-name">空间叙事</div>
+          <div class="work-meta">装置艺术</div>
+        </div>
+        <div class="work-year">2022</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-img img-pattern-7">
+        <span class="img-placeholder-text">07</span>
+      </div>
+      <div class="work-info">
+        <div>
+          <div class="work-name">色彩研究</div>
+          <div class="work-meta">艺术创作</div>
+        </div>
+        <div class="work-year">2022</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div>
+    <p class="section-label">联系我</p>
+    <h2 class="contact-title">一起创造<br><em>有意思的</em><br>东西</h2>
+  </div>
+  <div class="contact-right">
+    <p style="color: #888; font-size: 0.9rem; line-height: 1.8;">无论是品牌合作、艺术项目，还是只是想聊聊创作——我都很乐意听。</p>
+    <a href="mailto:hello@yourname.com" class="contact-email">hello@yourname.com</a>
+    <div class="contact-socials">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">微博</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2024 你的名字. 保留所有权利.</p>
+  <p>设计 &amp; 开发 — 用心制作</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
 </body>
 </html>
